@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="css/validate.css"/>
+    <title>验证</title>
+    <script src="https://cdn1.lncld.net/static/js/av-mini-0.5.7.js"></script>
+<!--    <script>
+        AV.initialize("efqmjf2gco3z0b9eqlvx714kfvzfpkx94mrr4xbbi7pzu4ts", "9xu5smmtkpnvz6h3k8r82dn6kfims9d8hpg2je5tztmot4wf");
+    </script>-->
+    <script>
+        AV.initialize('56fN6rijVJvWJo6EMTwcoMLs', 'Fl3vxu3ssxOHmnJARKqELp0m');
+    </script>
+    <style type="text/css">
+        *{margin:0;padding:0;}
+        body{background-color: #f8fded;font-size: 16px;}
+        img{border:none}
+        li{list-style-type: none}
+
+        header{
+            background: -webkit-linear-gradient(#7eb506, #4e8200); /* Safari 5.1 - 6.0 */
+            background: -moz-linear-gradient(#7eb506, #4e8200); /* Safari 5.1 - 6.0 */
+            position:relative;height:3em;text-align:center;}
+        .back{position:absolute;left:1em;display:inline-block;height:2.2em;padding-top: 0.5em}
+        h1{color:#fff;font-weight:lighter;font-size:16px;height:3em;line-height: 3em;display: inline-block;}
+
+        .content{background-color: white;border-radius: 3px;border:solid #dbdcdc 1px;
+            margin-top:2em ;width:80%;margin-left: 10%;padding-bottom: 5px}
+        .card{width:96%;padding:2%;}
+        .input-row{height:50px;line-height:50px;border-bottom: solid 1px #dbdcdc;}
+
+        .input-clear{height:42px;line-height:42px; border:none;color:#666;float:right;}
+        label{font-size: 16px;color:#7e7e7e}
+
+        .validate{padding-top: 1px;}
+        .validate button{font-size:16px;margin:1em 0 0 25%;width:50%;height:50px;line-height:50px;background-color:#4e8200;border:none;color:white;border-radius: 3px;}
+        .validate a{font-size:16px;margin-top:0.5em;text-decoration: none;color:#007aff;float: right;margin-right:1em}
+
+    </style>
+</head>
+<body>
+    <header>
+        <a class="back" href="login.html"><img src="images/back.png" style="height: 2em"/></a>
+        <h1>验证</h1>
+    </header>
+    <div class="content">
+        <div class="card">
+            <div class="input-row">
+                <label >验证码</label>
+                <input id="validateCode" type="tel" class="input-clear" placeholder="输入验证码">
+            </div>
+        </div>
+        <div class="validate">
+            <a id="resend" onclick="resend()">30秒后未收到验证码？点击重试</a>
+            <button  id='signupbnt' >验证</button><br/>
+        </div>
+    </div>
+<script>
+    document.getElementById("signupbnt").addEventListener('click',function(){
+        var validateCode=document.getElementById("validateCode").value;
+        if(validateCode==''){
+            alert("请输入验证码!");
+        }
+        else{
+            AV.User.verifyMobilePhone(validateCode).then(function(){
+                //验证成功
+                alert("验证成功!");
+                window.location.href='index.html';
+            }, function(obj,err){
+                alert("验证码错误!");
+            });
+        }
+    },false);
+    document.getElementById("resend").addEventListener('tap',function(){
+        var phoneNumber=mui.currentWebview.username;
+        AV.User.requestMobilePhoneVerify(phoneNumber).then(function(){
+            //发送成功
+        }, function(err){
+            //发送失败
+            alert("发送失败!");
+        });
+    });
+    function resend(){
+        var phoneNumber=localStorage.getItem('username');
+        AV.User.requestMobilePhoneVerify(phoneNumber).then(function(){
+            alert('发送成功！');
+        }, function(err){
+            alert("发送失败!");
+        });
+    }
+</script>
+</body>
+</html>

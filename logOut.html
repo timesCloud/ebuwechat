@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,user-scalable=no;initial-scale=1"/>
+    <title>菜单</title>
+    <script src="https://cdn1.lncld.net/static/js/av-mini-0.5.7.js"></script>
+<!--    <script>
+        AV.initialize("efqmjf2gco3z0b9eqlvx714kfvzfpkx94mrr4xbbi7pzu4ts", "9xu5smmtkpnvz6h3k8r82dn6kfims9d8hpg2je5tztmot4wf");
+    </script>-->
+    <script>
+        AV.initialize('56fN6rijVJvWJo6EMTwcoMLs', 'Fl3vxu3ssxOHmnJARKqELp0m');
+    </script>
+    <style type="text/css" rel="stylesheet">
+        *{margin:0;padding:0;}
+        body{background-color: #efeff4;font-size: 16px;}
+        img{border:none}
+        li{list-style-type: none}
+
+        .header{height:2em;text-align:center;}
+        h1{color:#666;font-weight:lighter;font-size:22px;height:2em;line-height: 2em;display: inline-block;}
+
+    </style>
+</head>
+<body>
+<div style="background-color:#fff;width:260px;margin:80px auto;padding:5px;border-radius: 5px;border:solid #ECF0F1 1px">
+    <div class="header">
+        <h1>当前用户</h1>
+    </div>
+    <div style="text-align: center;padding:10px 0;border-bottom: 1px #ECF0F1 solid;">
+        <a href="login.html" id="username" style="font-size:14px;color:#666;text-decoration: none">请登录</a>
+    </div>
+</div>
+    <p style="margin: 10px 15px;">
+        <button id="logout" type="button"  style="background-color:#4e8200;border:none;border-radius:3px;color:#ffffff;width:50%;margin-left:25%;height:3em">解除绑定</button>
+    </p>
+
+<script>
+    window.onload=function(){
+        var currentUser=AV.User.current();
+        var span=document.getElementById("username");
+        var userName=currentUser.get("username");
+        var logout=document.getElementById("logout");
+        userName=userName.substr(0,3)+'****'+userName.substr(7,10);
+        span.innerHTML=userName;
+        logout.addEventListener('click',function(){
+            AV.User.logOut();
+            window.location.href='login.html';
+        });
+    }
+</script>
+</body>
+</html>

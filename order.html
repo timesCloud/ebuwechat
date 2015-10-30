@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1">
+    <title>订单详情</title>
+    <script type="text/javascript" src="js/jquery-1.11.1.min.js"></script>
+    <script src="https://cdn1.lncld.net/static/js/av-mini-0.5.7.js"></script>
+    <script>
+        AV.initialize("efqmjf2gco3z0b9eqlvx714kfvzfpkx94mrr4xbbi7pzu4ts", "9xu5smmtkpnvz6h3k8r82dn6kfims9d8hpg2je5tztmot4wf");
+    </script>
+<!--    <script>
+        AV.initialize('56fN6rijVJvWJo6EMTwcoMLs', 'Fl3vxu3ssxOHmnJARKqELp0m');
+    </scrip-->t>
+    <style type="text/css" rel="stylesheet">
+        *{margin:0;padding:0;}body{background-color: #efeff4;font-size: 16px;}img{border:none}
+        li{list-style-type: none}
+
+        header{
+            background: -webkit-linear-gradient(#7eb506, #4e8200); /* Safari 5.1 - 6.0 */
+            background: -moz-linear-gradient(#7eb506, #4e8200); /* Safari 5.1 - 6.0 */
+            position:relative;height:3em;text-align:center;}
+
+        h1{color:#fff;font-weight:lighter;font-size:16px;height:3em;line-height: 3em;display: inline-block;}
+
+        #order-list li{font-size: 15px;background-color:#fff;margin-top: 10px; padding:8px 0;overflow: hidden}
+        #order-list li p,h4{padding:5px 0 5px 20px;}
+        #order-list li p span{margin:0 3px;}
+        #order-list li p span:first-child{width:50%;display:inline-block;}
+        /*#order-list li div:last-child{margin-top:3px;padding-top: 3px; }*/
+        .orderDate{padding:5px 0 5px 5px; ;color:black;text-decoration:none;display:block;background-color:#b9d95b;}
+        .sumP{font-weight: 900;font-size: 18px;color:#c81616}
+        .divBut{float:right;width:33%;text-align: center;padding-top: 10px;}
+        button{padding:8px 15px;border:none;background-color:#4e8200;color:#ffffff;border-radius: 2px;}
+        .newB{color: #43CD80;}
+    </style>
+</head>
+<body>
+    <header>
+        <a class="back"></a>
+        <h1>订单详情</h1>
+    </header>
+    <div>
+        <ul id="order-list">
+        </ul>
+    </div>
+<script type="text/javascript" src="https://one.pingxx.com/lib/pingpp_one.js"></script>
+<script type="text/javascript">
+    var openID;
+    //检查是否可卖
+    function buyAgain(t) {
+        var idArr = [], numArr = [];
+        var produceName = AV.Object.extend("Product");
+        var queryName = new AV.Query(produceName);
+/*        queryName.equalTo('objectId','5601237c60b27cb222503bc6');
+        queryName.find({
+            success:function(r){
+                alert(r[0].get('onsell'));
+            }
+        });*/
+        $(t).parents('li').find('p').each(function(){
+            var id=$(this).attr('id');
+            var count=$(this).attr('data-count');
+            queryName.equalTo('objectId',id);
+            queryName.find({
+                success:function(r){
+                    if(r.length>0){
+/*                        console.log(r[0].id);
+                        console.log(r[0].get('productName'));
+                        if(r[0].id=='5603d00160b2780e713b1ea0'){
+                            alert(r[0].id+'--'+r[0].get('onsell')+r[0].get('productName'));
+                        }*/
+                        if(r[0].get('onsell')==true){
+                            idArr.push(id);
+                            numArr.push(count);
+                            localStorage.setItem('numArr',numArr);
+                            localStorage.setItem('idArr',idArr);
+                        }
+                        if(r[0].get('onsell')==false){
+                            alert('菜品:'+r[0].get('productName')+'已下架！');
+                        }
+                    }
+                },
+                error:function(e){
+                    alert('有产品不存在，请从新选菜下单！');
+                }
+            });
+        });
+
+
+        console.log(localStorage.getItem('numArr')+'--'+localStorage.getItem('idArr'));
+        window.location.href='cart.html';
+    }
+    function getOpenId(){
+        var UserWCInfosTable = AV.Object.extend("UserWCInfos");
+        var query = new AV.Query(UserWCInfosTable);
+        query.include('user');
+        query.equalTo('user',AV.User.current());
+        query.find({
+            success:function(r){
+                openID=r[0].get('openid');
+
+            },
+            error:function(e){
+                 alert(e.message);
+            }
+        });
+    }
+    //查询UserJoinStore表
+    function selectUserJoinStore(){
+        var UserJoinStore=AV.Object.extend('UserJoinStore');
+        var queryUJS=new AV.Query(UserJoinStore);
+        queryUJS.equalTo('user',AV.User.current());
+        queryUJS.ascending('createdAt');
+        queryUJS.include('store');
+        queryUJS.find({
+            success:function(r){
+                getList(r[0].get('store'));
+
+            },
+            error: function (e) {
+                alert('查询餐厅失败:'+e.message);
+            }
+        });
+    }
+    //获取订单信息
+    function getList(orderStore) {
+        var currentUser = AV.User.current();
+        var OrderTable = AV.Object.extend("OrderTable");
+        var query = new AV.Query(OrderTable);
+        query.equalTo("orderStore", orderStore);
+        query.descending("orderTime");
+        query.find({
+            success: function (obj) {
+                var status = "";
+                for (var i = 0; i < obj.length; i++) {
+                    if ( obj[i].get('canceled')==false ) {
+                        switch (obj[i].get('orderStatus')) {
+                            case 1:
+                                status = "等待确认..";
+                                break;
+                            case 2:
+                                status = "系统已确认..";
+                                break;
+                            case 3:
+                                status = "分拣中..";
+                                break;
+                            case 4:
+                                status = "出库录单完毕..";
+                                break;
+                            case 5:
+                                status = "出库准备..";
+                                break;
+                            case 6:
+                                status = "转仓调拨中..";
+                                break;
+                            case 7:
+                                status = "到达配送站..";
+                                break;
+                            case 8:
+                                status = "配送中..";
+                                break;
+                            case 9:
+                                status = "已配送成功..";
+                                break;
+                            case 10:
+                                status = "已完成!";
+                                break;
+                            default:
+                                status = "error";
+                        }
+                        var orderSumPrice = Number(obj[i].get('orderSumPrice')).toFixed(2);
+                        $('#order-list').append("<li id=" + obj[i].id + "><span class='orderDate'>下单日期：" + getDate(obj[i].get('orderTime')) + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;总价：<span class='sumP'>" + orderSumPrice + "</span>元</span><h4>订单状态：<span class='newB'>" + status + "</span></h4></li>");
+                        var relation = obj[i].relation('orderDetail');
+                        var query = relation.query();
+                        (function (i) {
+                            query.include('orderDetailProductName');
+                            query.find({
+                                success: function (object) {
+                                    for (var k = 0; k < object.length; k++) {
+                                        $('#' + obj[i].id + '').append("<p id="+object[k].get('orderDetailProductName').id+" data-count="+object[k].get('orderDetailProductCount')+"><span>品名：" + object[k].get('orderDetailProductName').get('productName') + "</span><span >数量：" + object[k].get('realUnit') +object[k].get('orderDetailProductName').get('unitString')+  "</span><span>,小记：" +object[k].get('realPrice') +"元</span></p>");
+                                    }
+                                    $('#' + obj[i].id + '').append('<div class="divBut"><button onclick="buyAgain(this)" id="' + obj[i].id + '" type="button">再次购买</button></div>');
+                                    if(obj[i].get('paid')==true){
+                                        $('#' + obj[i].id + '').append('<div class="divBut"><button type="button">付款成功</button></div>');
+                                    }else{
+                                        $('#' + obj[i].id + '').append('<div class="divBut"><button onclick="cancel(this)" id="' + obj[i].id + '" type="button">取消订单</button></div>');
+                                        if(obj[i].get('orderStatus')>=2){
+                                            $('#' + obj[i].id + '').append('<div class="divBut"><button style="background-color: #c81616" onclick="payNow(this)" id="' + obj[i].get('orderSumPrice') + '"orID='+obj[i].get('orderID')+' type="button">立即付款</button></div>');
+                                        }
+                                    }
+                                },
+                                error: function (err) {
+                                    alert(err.message);
+                                }
+                            });
+                        })(i);
+                    }
+                }
+            },
+            error: function (err) {
+                alert(err.message);
+            }
+        });
+    }
+    function getDate(date) {
+        var year = date.getFullYear();
+        var month = date.getMonth() + 1;
+        var day = date.getDate();
+        return year + "-" + month + "-" + day;
+    }
+    //点击取消按钮
+    function cancel(t) {
+        var sureCancel=confirm('确认取消订单？');
+        if(sureCancel==true){
+            var objId=t.getAttribute('id');
+            AV.Cloud.run('SetOrderEnableNCancel',
+                    {
+                        "orderOid":objId,
+                        "enabled":"true",
+                        "canceled":"true"
+                    },
+                    {
+                        success:function(e){
+                            alert('取消成功！');
+                            location.reload();
+                        },
+                        error:function(e){
+                            alert('取消失败!');
+                            location.reload();
+                        }
+                    })
+        }
+    }
+    function payNow(t){
+        var amount=$(t).attr('id')*100;
+        var order_no=$(t).attr('orID');
+        //alert(amount+'----'+'----'+order_no+openID);
+        //alert(amount+'----'+order_no);
+        pingpp_one.init({
+            app_id:'app_PyDiL4vrnH0GLCmT',                     //该应用在ping++的应用ID
+            order_no:order_no,                                   //订单在商户系统中的订单号
+            amount:amount,                   //订单价格，单位：人民币 分
+            // 壹收款页面上需要展示的渠道，数组，数组顺序即页面展示出的渠道的顺序
+            // upmp_wap 渠道在微信内部无法使用，若用户未安装银联手机支付控件，则无法调起支付
+            channel:['wx_pub'],
+            charge_url:'https://ebu.avosapps.com/createCharge',  //商户服务端创建订单的url
+            //            charge_param:{a:1,b:2},                      //(可选，用户自定义参数，若存在自定义参数则壹收款会通过 POST 方法透传给 charge_url)*//**//*
+             open_id:openID                         //(可选，使用微信公众号支付时必须传入)
+
+        },function(res){
+            if(!res.status){
+                //处理错误
+                alert('error：'+res.msg);
+            }
+            else{
+                //若微信公众号渠道需要使用壹收款的支付成功页面，则在这里进行成功回调，调用 pingpp_one.success 方法，你也可以自己定义回调函数
+                //其他渠道的处理方法请见第 2 节
+                pingpp_one.success(function(res){
+                    if(!res.status){
+                        alert(res.msg);
+                    }
+                },function(){
+                    //这里处理支付成功页面点击“继续购物”按钮触发的方法，例如：若你需要点击“继续购物”按钮跳转到你的购买页，则在该方法内写入 window.location.href = "你的购买页面 url"
+                    window.location.href='http://www.stareboo.com/wechat/';//示例
+                });
+            }
+        });
+
+    }
+    //开始执行
+    getOpenId();
+    selectUserJoinStore();
+</script>
+</body>
+
+</html>

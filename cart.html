@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1">
+    <meta name="format-detection" content="telephone=no">
+    <title>购物车</title>
+    <script type="text/javascript" src="js/jquery-1.11.1.min.js"></script>
+    <script src="https://cdn1.lncld.net/static/js/av-mini-0.5.7.js"></script>
+    <script>
+        AV.initialize("efqmjf2gco3z0b9eqlvx714kfvzfpkx94mrr4xbbi7pzu4ts", "9xu5smmtkpnvz6h3k8r82dn6kfims9d8hpg2je5tztmot4wf");
+    </script>
+<!--    <script>
+        AV.initialize('56fN6rijVJvWJo6EMTwcoMLs', 'Fl3vxu3ssxOHmnJARKqELp0m');
+    </script>-->
+    <style type="text/css">
+        *{margin:0;padding:0;}body{background-color: #efeff4;font-size: 16px;}img{border:none}
+        li{list-style-type: none}
+
+        header{
+            background: -webkit-linear-gradient(#7eb506, #4e8200); /* Safari 5.1 - 6.0 */
+            background: -moz-linear-gradient(#7eb506, #4e8200); /* Safari 5.1 - 6.0 */
+            position:relative;height:3em;text-align:center;}
+        .back{position:absolute;left:1em;display:inline-block;height:2.2em;padding-top: 0.5em}
+        h1{color:#fff;font-weight:lighter;font-size:16px;height:3em;line-height: 3em;}
+        .clearCart{height:1.9em;width:2.3em;float:right;margin:-2.5em 1em 0 0;border-radius: 3px;border:none;
+            background-color:#b9d95b;color:#fff;padding:2px 5px 0 5px}
+
+        .content li,.content span,.content div{font-size: 14px;}
+        .content .firstLi{padding:0.5em 5px;background-color:#b9d95b;font-weight: bold;color:#000}
+        .secondLi,.storeMessage li,.remark{padding:0.5em 5px !important;}
+        .orderList{clear:both;overflow: hidden;padding: 0.8em 5px!important;border-bottom: 1px #ECF0F1 solid}
+        .order-middle{float:right;margin: -35px 50px 0 0;}
+        .order-right img{height:20px;float:right;margin:-20px 10px 0 0 }
+        .singleSum{margin-right: 16%;float:right;}
+        .content li{padding: 3px 6px;background-color: white}
+        .subAdd{position:relative;margin-left:125px;overflow:hidden ;
+            border-radius:3px;height: 25px;width: 95px}
+        .subAdd input{text-align:center;height:23px;border:none;width:25px;position:absolute;z-index: 1;left:35px;top:1px;}
+        .subtractNum,.addNum{
+            z-index: 2;
+            position:absolute;
+            color:white;
+            font-size: 20px;
+            border:none;
+            border-radius: 3px;
+            width: 30px;
+            height:25px;
+            line-height: 15px;
+        }
+        .subtractNum{left:0;background-color: #d6d6d6}
+        .addNum{right:0;background-color: #9ece32}
+
+        .storeMessage{background-color: #ffffff}
+        .storeMessage li{border:none;width:90%;margin-left:5px;font-size: 14px ;font-weight:100;color:#333333}
+
+        .remark input{font-size: 12px;height:2em;width:100%;border-radius: 3px;border:1px solid #cfcfcf;color: #666}
+        .footer{
+            background: -webkit-linear-gradient(#7eb506, #4e8200); /* Safari 5.1 - 6.0 */
+            background: -moz-linear-gradient(#7eb506, #4e8200); /* Safari 5.1 - 6.0 */
+            text-align:center;width: 100%;height:50px;line-height:50px;margin-top:15px;}
+        .footer span{
+            display:inline-block;background-color:#cadf76;height:30px;line-height:30px;
+            width:5em;margin:7px auto;color:#fff;border-radius: 3px;color:#000}
+    </style>
+</head>
+<body>
+    <header>
+        <a class="back" href="index.html"><img src="images/back.png" style="height: 2em"/></a>
+        <h1>购物车</h1>
+        <span class="clearCart" onclick="clearCart()" ><img style="height:1.6em" src="images/clearCart.png" alt="清空"/></span>
+    </header>
+
+    <div class="content">
+        <ul id='cartList'>
+            <li class="firstLi">购物清单</li>
+            <!--<li id="+product[i]+" class='orderList'>
+                <div class='order-left'>
+                    <div class=''>白萝卜
+                        <div><span style='color: red;'>2.5</span>元/包（5斤装）
+                        </div>
+                    </div>
+                </div>
+                <div class='order-middle'>
+                    <div class='subAdd'>
+                        <button class='subtractNum' type='button'>-</button>
+                        <input type='number' />
+                        <button class='addNum' type='button'>+</button>
+                    </div>
+                </div>
+                <div class='order-right'>
+                    <a datafiled="+product[i]+" dataNeed="+numArr[i]+" dataUnit="+obj.get('productPrice')+">
+                        <img src="images/delete.png" />
+                    </a>
+                </div>
+                <div class="singleSum">已选
+                    <span id='singleNum'>2</span>箱  共<span id='singlePri'>5</span>元
+                </div>
+            </li>-->
+        </ul>
+        <ul>
+            <li class="firstLi" style="clear:both;">总价</li>
+            <li class="secondLi">品类数：<span id="countNum" style="color:red">0</span>&nbsp;&nbsp;&nbsp;总价：<span id="sumNum" style="color: red;"></span>元</li>
+        </ul>
+
+        <ul>
+            <li class="firstLi">收货信息</li>
+            <div id='insertM' class="storeMessage"></div>
+        </ul>
+        <ul>
+            <li class="firstLi">备注</li>
+            <li class="remark"><input id="remark" type="text" placeholder="请输入备注信息！"/></li>
+        </ul>
+    </div>
+    <nav class="wait" style="display:none">
+        <nav class="" style="position:fixed;top:0;left:0;z-index:9999;background-color: black;width: 100%;height:100%;background-color:rgba(0,0,0,0.4);">
+            <div style="margin:40% 30%">
+                <img src="images/loading.gif" style=" width: 120px;" />
+            </div>
+        </nav>
+    </nav>
+    <nav class="footer">
+        <div id="order">
+            <span>立即下单</span>
+        </div>
+    </nav>
+<script type="text/javascript">
+    var kinds=0;
+    var sumPrice=0;
+    var t=0;
+    var clearTime;
+    var idArr=[];
+    var numArr=[];
+    var currentUserObj=AV.User.current();
+    var objRest;
+    function clearCart(){
+        var sureClear=confirm('确认清空购物车？');
+        if(sureClear==true){
+            localStorage.removeItem('idArr');
+            localStorage.removeItem('numArr');
+            location.reload();
+        }
+    }
+    //加减菜品数量
+    function addSubtract(){
+        //联动修改显示价格
+        function changePrice(objInput,addOrSub) {
+            var singlePrice=parseFloat(objInput.parents('li').find('.order-left span').text());
+            objInput.parent().parent().parent().find('#singleNum').html(objInput.val());
+            objInput.parent().parent().parent().find('#singlePri').html(Number(objInput.val()*singlePrice).toFixed(2));
+            if(addOrSub=='add'){sumPrice=parseFloat(sumPrice)+singlePrice;}
+            if(addOrSub=='sub'){sumPrice=parseFloat(sumPrice)-singlePrice;}
+            if(addOrSub=='cInput'){
+                numArr[objInput.attr('dataIndex')]=objInput.val();
+                var preNeed=objInput.attr('dataValue');
+                sumPrice=parseFloat(sumPrice)+parseFloat(objInput.attr('dataUnit')*(objInput.val()-objInput.attr('dataValue')));
+            }
+            $('#sumNum').html(Number(sumPrice).toFixed(2));
+            objInput.attr('dataValue',objInput.val());
+            objInput.parent().parent().next().find('a').attr('dataNeed',objInput.val());
+        }
+        $('.subtractNum').unbind('click').click(function(){
+            var inputN=$(this).parent().children('input');
+            if(inputN.val()<=0||inputN.val()==''){inputN.val(0);}
+            else{
+                inputN.val(parseInt(inputN.val())-1);
+                changePrice(inputN,'sub');
+            }
+            storagePIdNumber(inputN);
+        });
+        $('.addNum').unbind('click').click(function(){
+            var inputN=$(this).parent().children('input');
+            if(inputN.val()<0||inputN.val()==''){inputN.val(0);}
+            else{
+                inputN.val(parseInt(inputN.val())+1);
+                changePrice(inputN,'add');
+            }
+            storagePIdNumber(inputN);
+        });
+        $('.subAdd input').unbind('change').change(function(){
+            var obj=$(this);
+            if(parseInt(obj.val())<1){ obj.val(0);}
+            else{
+                changePrice(obj,'cInput');
+            }
+            storagePIdNumber(obj);
+        });
+        $('#cartList li a').unbind('click').click(function(){
+            var obj=$(this);
+            var sureDel=confirm( "确认删除该菜品?");
+            if(sureDel==true){
+                sumPrice=sumPrice-obj.attr('dataNeed')*obj.attr('dataUnit');
+                numArr.splice($.inArray(obj.attr('dataNeed'),numArr),1);
+                idArr.splice($.inArray(obj.attr('datafiled'),idArr),1);
+                localStorage.setItem('idArr',idArr);
+                localStorage.setItem('numArr',numArr);
+                $('#sumNum').html(Number(sumPrice).toFixed(2));
+                $('#countNum').html(numArr.length);
+                var id="#"+obj.attr('datafiled');
+                $(id).remove();
+            }
+        });
+    }
+    //点击加减时存储菜品
+    function storagePIdNumber(inputN){
+        var idExist=false;
+        inputN=inputN[0];
+        for(var i=0;i<idArr.length;i++){
+            if(idArr[i]==inputN.id){
+                idExist=true;
+                numArr[i]=inputN.value;
+            }
+        }
+        if(idExist==false){idArr.push(inputN.id);numArr.push(inputN.value)}
+        localStorage.setItem('numArr',numArr);
+        localStorage.setItem('idArr',idArr);
+    }
+    //查询UserJoinStore表
+    function selectUserJoinStore(){
+        var UserJoinStore=AV.Object.extend('UserJoinStore');
+        var queryUJS=new AV.Query(UserJoinStore);
+        queryUJS.equalTo('user',currentUserObj);
+        queryUJS.ascending('createdAt');
+        queryUJS.include('store');
+        queryUJS.find({
+            success:function(r){
+                if(r.length>0){
+                    objRest=r[0].get('store').id;
+                    var html1='<li>餐厅名称：'+r[0].get('store').get('storeName')+'</li>'+
+                            '<li>联系方式：'+r[0].get('store').get('storeContact')+'</li>'+
+                            '<li>餐厅地址：'+r[0].get('store').get('storeAddress')+'</li>'+
+                            '<li>最早收货时间：'+r[0].get('store').get('earlyTime').getHours()+'：00：00'+'</li>'+
+                            '<li>最晚收货时间：'+r[0].get('store').get('latestTime').getHours()+'：00：00'+'</li>';
+                    $('#insertM').html(html1);
+                }else{
+                    alert('请绑定餐厅后下单！');
+                }
+
+            },
+            error: function (e) {
+                alert('查询餐厅失败:'+e.message);
+            }
+        });
+    }
+    //获取已经选购的订单列表
+    function getList(){
+        var Product= AV.Object.extend('Product');
+        var query=new AV.Query(Product);
+        idArr=localStorage.getItem('idArr').split(',');//产品ID
+        numArr=localStorage.getItem('numArr').split(',');//需要的产品数量
+        console.log(idArr+'--'+numArr);
+        for(var i=0;i<idArr.length;i++){
+            (function(i){
+                query.get(idArr[i],{
+                    success:function(obj){
+                        var sumPri=Number(obj.get('productPrice')*numArr[i]).toFixed(2);
+                        //插入所选菜品列表
+                        $('#cartList').append("<li id="+idArr[i]+" class='orderList'><div class='order-left'><div>"+obj.get('productName')+"<div  style='color: red;'><span>"+obj.get('productPrice')+"</span>"+"元/"+obj.get('packageString')+"</div></div></div><div class='order-middle'><div class='subAdd'><button class='subtractNum' type='button'>-</button><input id="+idArr[i]+" dataUnit="+obj.get('productPrice')+" dataValue="+numArr[i]+" dataIndex="+i+" type='tel' value="+numArr[i]+" /><button class='addNum' type='button'>+</button></div></div><div class='order-right'><a datafiled="+idArr[i]+" dataNeed="+numArr[i]+" dataUnit="+obj.get('productPrice')+"><img src='images/delete.png'/></a></div><div class='singleSum'>已选<span id='singleNum'>"+numArr[i]+"</span>箱  共<span id='singlePri'>"+sumPri+"</span>元</div></li>");
+                        addSubtract();
+                        sumPrice=parseFloat(sumPrice)+parseFloat(numArr[i]*obj.get('productPrice'));
+                        sumPrice=Number(sumPrice).toFixed(2);
+                        kinds=idArr.length;
+                        $('#countNum').html(kinds);
+                        $('#sumNum').html(sumPrice);
+                    },
+                    error:function(err){
+                        alert(err.message);
+                    }
+                })
+            })(i);
+        }
+    }
+    /*下单函数*/
+    function subOrder(){
+        var sumP=parseFloat($('#sumNum').html());
+       if(true){
+            document.getElementsByClassName('wait')[0].setAttribute('style','display:block');
+            countTime();
+            if(currentUserObj){
+                var remark=document.getElementById("remark").value||null;
+                var idCount=[];
+                for(var a=0;a<numArr.length;a++){
+                    if(numArr[a]!=0){
+                        idCount.push({
+                            "productOid":idArr[a] ,
+                            "count": parseInt(numArr[a])
+                        });
+                    }
+                }
+                //console.log('下单处：'+objRest+'--'+currentUserObj.id+'--'+remark+'--'+idCount);
+                AV.Cloud.run('AddOrder',{
+                            "storeOid":objRest,
+                            "userOid":currentUserObj.id,
+                            "remark":remark,
+                            "detailList":idCount
+                        },
+                        {
+                            success: function (result) {
+                                localStorage.removeItem('idArr');
+                                localStorage.removeItem('numArr');
+                                alert("下单成功!");
+                                window.location.href='order.html';
+                            },
+                            error: function (err) {
+                                alert(err.message+":网络不给力，请刷新订单列表确认下单是否成功");
+                                location.reload();
+                            }
+                        });
+            }else{
+                window.location.href='login.html';
+            }
+        }
+        else{
+            alert('您的订单未满100元，请再选一些吧!');
+        }
+
+    }
+    function GuID(un){
+        var date=new Date();
+        var strGuID=un+'-'+date.getTime().toString();
+        return strGuID ;
+    }
+    function countTime(){
+        t++;
+        if(t==10){
+            clearTimeout(clearTime);
+            alert('下单失败！');
+            location.reload();
+        }
+        clearTime=setTimeout(countTime,1000);
+    }
+    //检查是否选有菜品并下单
+    function orderEventListener(){
+        document.getElementById("order").addEventListener('click',function(){
+            if(
+                    localStorage.getItem('idArr').length==0){alert("你没有选择菜品");
+            }else{
+                subOrder();
+            }
+        });
+    }
+    $(document).ready(function(){
+        orderEventListener();
+        getList();
+        //selectRes();
+        selectUserJoinStore();
+    });
+
+
+</script>
+</body>
+</html>

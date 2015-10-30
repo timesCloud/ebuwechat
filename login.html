@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1">
+    <title>登录</title>
+    <script src="https://cdn1.lncld.net/static/js/av-mini-0.5.7.js"></script>
+    <script>
+        AV.initialize("efqmjf2gco3z0b9eqlvx714kfvzfpkx94mrr4xbbi7pzu4ts", "9xu5smmtkpnvz6h3k8r82dn6kfims9d8hpg2je5tztmot4wf");
+    </script>
+<!--    <script>
+        AV.initialize('56fN6rijVJvWJo6EMTwcoMLs', 'Fl3vxu3ssxOHmnJARKqELp0m');
+    </script>-->
+    <style type="text/css" rel="stylesheet">
+        *{margin:0;padding:0;}body{background-color: #efeff4;font-size: 16px;}img{border:none}
+        li{list-style-type: none}
+
+        header{position:relative;height:3em;text-align:center;
+                background: -webkit-linear-gradient(#7eb506, #4e8200);
+                background: -moz-linear-gradient(#7eb506, #4e8200);}
+        h1{color:#fff;font-weight:lighter;font-size:16px;height:3em;line-height: 3em;display: inline-block;}
+
+        .content{margin-top:5em ;width:80%;margin-left: 10%}
+        .card{background-color: white;width:96%;border-radius: 3px;
+              border:solid #dbdcdc 1px;padding:2%;}
+        .input-row{height:50px;line-height:50px;border-bottom: solid 1px #dbdcdc;}
+        .input-row:last-child{border:none}
+        .input-clear{height:50px;line-height:50px; border:none;color:#666;float:right;}
+        label{font-size: 16px;color:#7e7e7e}
+
+        .login{padding-top: 1px;}
+        .login button{margin:1em 0 0 25%;width:50%;font-size:16px;height:3em;background-color:#4e8200;border:none;
+            color:white;border-radius: 3px;
+            background: -webkit-linear-gradient(#7eb506, #4e8200);
+            background: -moz-linear-gradient(#7eb506, #4e8200);}
+        .login a{font-size:16px;margin-top:0.5em;text-decoration: none;color:#007aff;float: right;margin-right:2em}
+
+        .logOut{background-color:#fff;width:260px;margin:0 auto;;border-radius: 5px;border:solid #ECF0F1 1px;text-align:center;}
+        .h1{color:#4e8200;font-weight:lighter;font-size:22px;height:2em;line-height: 2em;display: inline-block;}
+
+
+    </style>
+</head>
+<body>
+<header>
+    <h1>登录</h1>
+</header>
+<div class="content">
+    <div class="card" style="display:block">
+        <div class="input-row">
+            <label>登录名</label>
+            <input id="username" type="tel" class="input-clear" placeholder="输入手机号">
+        </div>
+        <div class="input-row">
+            <label>密码</label>
+            <input id="password" type="password" class="input-clear" placeholder="密码">
+        </div>
+    </div>
+    <div class="logOut" style="display:none">
+        <div class="header">
+            <h1 class="h1">当前用户</h1>
+        </div>
+        <div style="text-align: center;padding:10px 0;">
+            <span id="userN" style="font-size:14px;color:#666;text-decoration: none">请登录</span>
+        </div>
+    </div>
+    <div class="login">
+        <a href="forgetPW.html">忘记密码</a>
+        <a href="signUp.html">还没有账号？去注册</a>
+        <a href="changePW.html" style="display:none">修改密码</a>
+        <button onclick="login()" >登录</button><br/>
+    </div>
+</div>
+<!--<script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>-->
+<script>
+    var loginOrLoginOut='login';
+    /*AV.Cloud.run('GetWechatSignature',{'index':'0','url':'www.stareboo.com'},{
+        success:function(r){
+            appId=r.appid;
+            timestamp= r.timestamp;
+            nonceStr= r.nonceStr;
+            signature= r.signature;
+
+        },
+        error:function(e){
+            alert(e.message);
+        }
+    });*/
+    function login(){
+        if(loginOrLoginOut=='login'){
+            var username=document.getElementById('username').value;
+            var password=document.getElementById('password').value;
+            AV.User.logIn(username,password,{
+                success:function(r){
+                    window.location.href= 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxe54b53d8fb59af50&redirect_uri=http://ebu.avosapps.com/wcOauth2Redirect&response_type=code&scope=snsapi_userinfo&state='+AV.User.current().id+'#wechat_redirect';
+                },
+                error:function(obj,e){
+                    alert('登录失败！'+ e.message);
+                }
+            });
+        }
+        if(loginOrLoginOut=='loginOut'){
+            loginOrLoginOut='login';
+            var divCard=document.getElementsByClassName('card')[0];
+            var divLogOut=document.getElementsByClassName('logOut')[0];
+            var butt=document.getElementsByTagName('button')[0];
+            var elementA=document.querySelectorAll('.login a');
+            elementA[0].style.display='inline-block';
+            elementA[1].style.display='inline-block';
+            elementA[2].style.display='none';
+            divCard.style.display='block';
+            divLogOut.style.display='none';
+            butt.innerHTML='登录';
+            AV.User.logOut();
+        }
+
+    }
+
+    window.onload=function(){
+        var span=document.getElementById("userN");
+        var divCard=document.getElementsByClassName('card')[0];
+        var divLogOut=document.getElementsByClassName('logOut')[0];
+        var butt=document.getElementsByTagName('button')[0];
+        if(AV.User.current()){
+            var userName=AV.User.current().get("username");
+            var elementA=document.querySelectorAll('.login a');
+            elementA[0].style.display='none';
+            elementA[1].style.display='none';
+            elementA[2].style.display='inline-block';
+            loginOrLoginOut='loginOut';
+            divCard.style.display='none';
+            divLogOut.style.display='block';
+            userName=userName.substr(0,3)+'****'+userName.substr(7,10);
+            span.innerHTML=userName;
+            butt.innerHTML='解除绑定';
+        }
+
+
+    }
+</script>
+<!--<script>
+    var date=new Date();
+    wx.config({
+        debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+        appId: appId, // 必填，公众号的唯一标识
+        timestamp: timestamp, // 必填，生成签名的时间戳
+        nonceStr: nonceStr, // 必填，生成签名的随机串
+        signature: signature,// 必填，签名，见附录1
+        jsApiList: [
+            'onMenuShareTimeline',
+            'onMenuShareAppMessage'
+            //'onMenuShareQQ',
+            //'onMenuShareWeibo'
+        ]
+    });
+
+    wx.ready(function () {
+        wx.error(function (res) {
+
+            // config信息验证失败会执行error函数，如签名过期导致验证失败，具体错误信息可以打开config的debug模式查看，也可以在返回的res参数中查看，对于SPA可以在这里更新签名。
+            alert('config信息验证失败:'+res);
+        });
+        wx.onMenuShareTimeline({
+            title: wxbt, // 分享标题
+            desc: wxms, // 分享描述
+            link: wxlink, // 分享链接
+            imgUrl: wxtp, // 分享图标
+            success: function () {
+                // 用户确认分享后执行的回调函数
+                try {
+                    updateShare();
+                } catch (e) { }
+                alert('分享成功');
+            },
+            cancel: function () {
+                // 用户取消分享后执行的回调函数
+                alert('取消分享');
+            }
+        });
+        wx.onMenuShareAppMessage({
+            title: wxbt, // 分享标题
+            desc: wxms, // 分享描述
+            link: wxlink, // 分享链接
+            imgUrl: wxtp, // 分享图标
+            type: '', // 分享类型,music、video或link，不填默认为link
+            dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
+            success: function () {
+                // 用户确认分享后执行的回调函数
+                try {
+                    updateShare();
+                } catch (e) { }
+                alert('分享成功');
+            },
+            cancel: function () {
+                // 用户取消分享后执行的回调函数
+                alert('取消分享');
+            },
+            fail: function (res) {
+                alert(res);
+            }
+        });
+
+    });
+</script>-->
+
+</body>
+</html>
