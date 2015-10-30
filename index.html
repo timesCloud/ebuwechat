@@ -492,6 +492,7 @@ function checkUserAgent(){
 if(!AV.User.current()){
     alert('登录后才可选购商品！');
     window.location.href='login.html';
+    console.log('11');
 }else{
     selectStore();
     openCart();
