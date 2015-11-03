@@ -489,13 +489,13 @@ function checkUserAgent(){
 }
 //开始执行
 /*checkUserAgent();*/
+selectStore();
+openCart();
 if(!AV.User.current()){
-    alert('登录后才可选购商品！');
-    window.location.href='login.html';
-    console.log('11');
-}else{
-    selectStore();
-    openCart();
+    var confirmReturn=confirm('您没有登陆，默认显示成都菜品！是否登录？');
+    if(confirmReturn){
+        window.location.href='login.html';
+    }
 }
 </script>
 
